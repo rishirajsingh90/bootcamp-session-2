@@ -50,8 +50,8 @@ describe('App Component', () => {
     await act(async () => {
       render(<App />);
     });
-    expect(screen.getByText('React Frontend with Node Backend')).toBeInTheDocument();
-    expect(screen.getByText('Connected to in-memory database')).toBeInTheDocument();
+    expect(screen.getByText('To Do App')).toBeInTheDocument();
+    expect(screen.getByText('Keep track of your tasks')).toBeInTheDocument();
   });
 
   test('loads and displays items', async () => {
@@ -59,8 +59,8 @@ describe('App Component', () => {
       render(<App />);
     });
     
-    // Initially shows loading state
-    expect(screen.getByText('Loading data...')).toBeInTheDocument();
+    // Initially shows loading state (CircularProgress)
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
     
     // Wait for items to load
     await waitFor(() => {
@@ -76,9 +76,9 @@ describe('App Component', () => {
       render(<App />);
     });
     
-    // Wait for items to load
+    // Wait for items to load (loading spinner should disappear)
     await waitFor(() => {
-      expect(screen.queryByText('Loading data...')).not.toBeInTheDocument();
+      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     });
     
     // Fill in the form and submit
