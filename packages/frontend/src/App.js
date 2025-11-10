@@ -1,4 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Alert,
+  IconButton
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import './App.css';
 
 function App() {
@@ -74,53 +92,104 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>To Do App</h1>
-        <p>Keep track of your tasks</p>
-      </header>
+    <Container maxWidth="md">
+      <Box sx={{ my: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography variant="h3" component="h1" gutterBottom>
+            To Do App
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Keep track of your tasks
+          </Typography>
+        </Box>
 
-      <main>
-        <section className="add-item-section">
-          <h2>Add New Item</h2>
-          <form onSubmit={handleSubmit}>
-            <input
+        <Paper elevation={2} sx={{ p: 3, mb: 4 }}>
+          <Typography variant="h5" component="h2" gutterBottom>
+            Add New Item
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 2 }}>
+            <TextField
+              fullWidth
               type="text"
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               placeholder="Enter item name"
+              variant="outlined"
+              size="medium"
+              aria-label="New item name"
             />
-            <button type="submit">Add Item</button>
-          </form>
-        </section>
+            <Button 
+              type="submit" 
+              variant="contained" 
+              color="primary"
+              sx={{ minWidth: 120 }}
+              disabled={!newItem.trim()}
+            >
+              Add Item
+            </Button>
+          </Box>
+        </Paper>
 
-        <section className="items-section">
-          <h2>Items from Database</h2>
-          {loading && <p>Loading data...</p>}
-          {error && <p className="error">{error}</p>}
-          {!loading && !error && (
-            <ul>
-              {data.length > 0 ? (
-                data.map((item) => (
-                  <li key={item.id}>
-                    <span>{item.name}</span>
-                    <button 
-                      onClick={() => handleDelete(item.id)}
-                      className="delete-btn"
-                      type="button"
-                    >
-                      Delete
-                    </button>
-                  </li>
-                ))
-              ) : (
-                <p>No items found. Add some!</p>
-              )}
-            </ul>
+        <Paper elevation={2} sx={{ p: 3 }}>
+          <Typography variant="h5" component="h2" gutterBottom>
+            Items from Database
+          </Typography>
+          
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
           )}
-        </section>
-      </main>
-    </div>
+          
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          
+          {!loading && !error && (
+            data.length > 0 ? (
+              <TableContainer>
+                <Table aria-label="items table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Item Name</TableCell>
+                      <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data.map((item) => (
+                      <TableRow 
+                        key={item.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {item.name}
+                        </TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            onClick={() => handleDelete(item.id)}
+                            color="error"
+                            aria-label={`Delete ${item.name}`}
+                            size="small"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+                No items found. Add some!
+              </Typography>
+            )
+          )}
+        </Paper>
+      </Box>
+    </Container>
   );
 }
 
